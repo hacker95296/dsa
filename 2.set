@@ -1,0 +1,106 @@
+sets = set()
+
+
+while True:
+    print("\nEnter the operation to be performed on the Set")
+    print("1. ADD \n2. REMOVE \n3. SIZE \n4. DISPLAY \n5. SEARCH")
+    print("6. UNION \n7. INTERSECTION \n8. DIFFERENCE \n9. EXIT")
+
+
+    try:
+        choice = int(input("Enter your choice (1-9): "))
+    except ValueError:
+        print("Please enter a valid number.")
+        continue
+
+
+    if choice == 1:
+        element = int(input("Enter the Element to be added to the set: "))
+        sets.add(element)
+        print("Element added.")
+
+
+    elif choice == 2:
+        element = int(input("Enter the Element to be removed: "))
+        if element in sets:
+            sets.remove(element)
+            print("Element removed.")
+        else:
+            print("The element is not present in the set.")
+
+
+    elif choice == 3:
+        print(f"The size of the set is: {len(sets)}")
+
+
+    elif choice == 4:
+        print("The elements in the set are:")
+        print(sets)
+
+
+    elif choice == 5:
+        element = int(input("Enter the element to be searched: "))
+        if element in sets:
+            print("The element is present in the set.")
+        else:
+            print("The element is not present in the set.")
+
+
+    elif choice == 6:
+        set2 = set()
+        print("Enter elements for the second set (enter 'done' to stop):")
+        while True:
+            val = input("Element: ")
+            if val.lower() == 'done':
+                break
+            try:
+                set2.add(int(val))
+            except ValueError:
+                print("Please enter a valid number.")
+
+
+        ans = sets.union(set2)
+        print(f"The union of Set 1 and Set 2 is: {ans}")
+
+
+    elif choice == 7:
+        set2 = set()
+        print("Enter elements for the second set (enter 'done' to stop):")
+        while True:
+            val = input("Element: ")
+            if val.lower() == 'done':
+                break
+            try:
+                set2.add(int(val))
+            except ValueError:
+                print("Please enter a valid number.")
+
+
+        ans = sets.intersection(set2)
+        print(f"The intersection of Set 1 and Set 2 is: {ans}")
+
+
+    elif choice == 8:
+        set2 = set()
+        print("Enter elements for the second set (enter 'done' to stop):")
+        while True:
+            val = input("Element: ")
+            if val.lower() == 'done':
+                break
+            try:
+                set2.add(int(val))
+            except ValueError:
+                print("Please enter a valid number.")
+
+
+        ans = sets.difference(set2)
+        print(f"The difference of Set 1 and Set 2 is: {ans}")
+
+
+    elif choice == 9:
+        print("Exiting program.")
+        break
+
+
+    else:
+        print("Invalid choice! Please enter a number between 1 and 9.")
