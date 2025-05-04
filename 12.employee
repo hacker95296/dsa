@@ -1,0 +1,163 @@
+#include<iostream>
+#include<string>
+#include<fstream>
+using namespace std;
+
+
+class Employee {
+private:
+        string name;
+        int id;
+        string designation;
+        double salary;
+
+
+public:
+        void addEmployee() {
+            ofstream file("employee.txt", ios::app);
+            if (!file) {
+                cout << "Error opening file!" << endl;
+                return;
+            }
+
+
+            cout << "Enter name of employee: ";
+            cin >> name;
+
+
+            cout << "Enter ID of employee: ";
+            cin >> id;
+
+
+            cin.ignore();
+
+
+            cout << "Enter designation of employee: ";
+            getline(cin, designation);
+
+
+            cout << "Enter salary of employee: ";
+            cin >> salary;
+
+
+            file << name << "," << id << "," << designation << "," << salary << "," << endl;
+            cout << "Employee data added successfully!" << endl;
+
+
+            file.close();
+        }
+
+
+        void displayEmployees() {
+            ifstream file("employee.txt");
+            if (!file) {
+                cout << "Error opening file!" << endl;
+                return;
+            }
+
+
+            cout << "Employee Records:\n";
+            cout << "Name, ID, Designation, Salary\n";
+
+
+            string line;
+            while (getline(file, line)) {
+                cout << line << endl;
+            }
+
+
+            file.close();
+        }
+
+
+        void deleteEmployee(int idToDelete) {
+            ifstream file("employee.txt");
+            if (!file) {
+                cout << "Error opening file!" << endl;
+                return;
+            }
+
+
+            ofstream tempFile("temp.txt");
+            if (!tempFile) {
+                cout << "Error opening temporary file!" << endl;
+                return;
+            }
+
+
+            string line;
+            bool found = false;
+
+
+            while (getline(file, line)) {
+                size_t pos = line.find_first_of(",");
+                int idFromFile = stoi(line.substr(pos + 1, line.find(",", pos + 1) - (pos + 1)));
+
+
+                if (idFromFile != idToDelete) {
+                    tempFile << line << endl; // Write the line to tempFile if the ID doesn't match
+                } else {
+                    found = true; // Flag found if employee is to be deleted
+                }
+            }
+
+
+            file.close();
+            tempFile.close();
+
+
+            if (found) {
+                remove("employee.txt"); // Remove original file
+                rename("temp.txt", "employee.txt"); // Rename tempFile to original file
+                cout << "Employee with ID " << idToDelete << " deleted successfully!" << endl;
+            } else {
+                cout << "Employee with ID " << idToDelete << " not found!" << endl;
+                remove("temp.txt"); // Clean up the temp file if employee not found
+            }
+        }
+};
+
+
+int main() {
+        Employee employee;
+        int choice;
+
+
+        while (true) {
+            cout << "\n1. Add Employee\n2. Display Employees\n3. Delete Employee\n4. Exit\n";
+            cout << "Enter your choice: ";
+            cin >> choice;
+
+
+            switch (choice) {
+                case 1:
+                    employee.addEmployee();
+                    break;
+
+
+                case 2:
+                    employee.displayEmployees();
+                    break;
+
+
+                case 3:
+                    int idToDelete;
+                    cout << "Enter ID to delete: ";
+                    cin >> idToDelete;
+                    employee.deleteEmployee(idToDelete);
+                    break;
+
+
+                case 4:
+                    cout << "Exiting program.\n";
+                    return 0;
+
+
+                default:
+                    cout << "Invalid choice! Please try again.\n";
+            }
+        }
+
+
+        return 0;
+}
