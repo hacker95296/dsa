@@ -1,0 +1,138 @@
+93% of storage used … If you run out, you can't create, edit and upload files. Get 30 GB of storage for ₹59.00 ₹15.00 for 1 month.
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Patient {
+public:
+    string name;
+    string condition;
+    int priority;
+
+    Patient(string name = "", string condition = "", int priority = 0) {
+        this->name = name;
+        this->condition = condition;
+        this->priority = priority;
+    }
+};
+
+class Hospital {
+private:
+    Patient* queue;
+    int capacity;
+    int size;
+
+public:
+    Hospital(int maxPatients) {
+        capacity = maxPatients;
+        size = 0;
+        queue = new Patient[capacity];
+    }
+
+    void enqueue() {
+        if (size == capacity) {
+            cout << "Queue is full! Cannot add more patients." << endl;
+            return;
+        }
+
+        string name, condition;
+        int priority;
+        cout << "Enter patient name: ";
+        cin >> name;
+        cout << "Enter patient condition: ";
+        cin >> condition;
+        cout << "Enter patient priority (lower value means higher priority): ";
+        cin >> priority;
+
+        Patient newPatient(name, condition, priority);
+        queue[size] = newPatient;
+        size++;
+
+        for (int i = size - 1; i > 0; i--) {
+            if (queue[i].priority < queue[i - 1].priority) {
+                swap(queue[i], queue[i - 1]);
+            } else {
+                break;
+            }
+        }
+
+        cout << "Patient " << name << " with condition " << condition << " added to the HOSPITAL!!!." << endl;
+    }
+
+    void dequeue() {
+        if (size == 0) {
+            cout << "No patient to serve" << endl;
+            return;
+        }
+
+        display();
+        Patient p = queue[0];
+        for (int i = 0; i < size - 1; i++) {
+            queue[i] = queue[i + 1];
+        }
+        size--;
+
+        cout << "Serving patient: " << p.name << ", condition: " << p.condition << endl;
+    }
+
+    void display() {
+        if (size == 0) {
+            cout << "The queue is empty." << endl;
+            return;
+        }
+
+        cout << "\nCurrent Queue:\n";
+        cout << "----------------------------------------\n";
+        for (int i = 0; i < size; i++) {
+            cout << "Patient Name: " << queue[i].name
+                 << ", Condition: " << queue[i].condition
+                 << ", Priority: " << queue[i].priority << endl;
+        }
+        cout << "----------------------------------------\n";
+    }
+
+    int getSize() {
+        return size;
+    }
+};
+
+int main() {
+    int maxPatients;
+    cout << "Enter the maximum number of patients the hospital can handle: ";
+    cin >> maxPatients;
+
+    Hospital hospital(maxPatients);
+
+    while (true) {
+        cout << "\nMenu:\n";
+        cout << "1. Add Patient\n";
+        cout << "2. Serve Patient\n";
+        cout << "3. Display Queue\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                hospital.enqueue();
+                break;
+            case 2:
+                hospital.dequeue();
+                break;
+            case 3:
+                hospital.display();
+                break;
+            case 4:
+                cout << "Exiting program..." << endl;
+                exit(0);
+                break;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+                break;
+        }
+    }
+
+    return 0;
+}
