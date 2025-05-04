@@ -1,0 +1,60 @@
+def Hash(tele, Num):
+        return tele % Num
+
+
+def linearProb(hashtable, index, Num):
+        i = 1
+        while(hashtable[index] != -1):
+                newindex = (index + i) % Num
+                if(hashtable[newindex] == -1) :
+                        return [newindex, i]
+                i+=1
+
+
+def quadraticprob(hashtable, index, Num):
+        i = 0
+        while(hashtable[index] != -1):
+                newindex = (index + i*i) % Num
+                if(hashtable[newindex] == -1) :
+                        return [newindex, i]
+                if(i > Num):
+                        print("There is no space left according to the quadratic equation")
+                        return -1
+                i+=1
+                
+        
+Num = int(input("Enter the total number of clients"))
+hashtable = [-1]*Num
+hashtable_new = [-1]*Num
+linear_comparison = 0
+quadratic_comparison = 0
+counter = 0
+for i in range(Num):
+        tele = int(input("Enter the the telephone number"))
+        index = Hash(tele, Num)
+        
+        if(hashtable[index] != -1) :
+                newindex_linear = linearProb(hashtable, index, Num)
+                hashtable[newindex_linear[0]] = tele
+                linear_comparison += newindex_linear[1]
+        else :
+                hashtable[index] = tele
+                linear_comparison += 1
+        
+        if(hashtable_new[index] == -1):
+                hashtable_new[index] = tele
+                quadratic_comparison += 1
+        else :
+                newindex_quadratic = quadraticprob(hashtable_new, index, Num)
+                if newindex_quadratic == -1:
+                        break
+                hashtable_new[newindex_quadratic[0]] = tele
+                quadratic_comparison += newindex_quadratic[1]
+        counter+=1
+        print(hashtable)
+        print(hashtable_new)        
+                
+print(f"The total number is {linear_comparison} and average comparison of linear probing is {linear_comparison / counter}")
+print(f"The total number is {quadratic_comparison} and The average comparison of quadratic probing is {quadratic_comparison/ counter}")
+print(hashtable)
+print(hashtable_new)
