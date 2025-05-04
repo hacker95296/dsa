@@ -1,0 +1,264 @@
+#include<iostream>
+using namespace std;
+
+class Node
+{
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val)
+    {
+        data = val;
+        left = right = nullptr;
+    }
+};
+
+Node* insertBST(Node* root, int val)
+{
+    if (root == nullptr)
+    {
+        root = new Node(val);
+        return root;
+    }
+
+    if (val > root->data)
+    {
+        root->right = insertBST(root->right, val);
+    }
+    else
+    {
+        root->left = insertBST(root->left, val);
+    }
+
+    return root;
+}
+
+void createBST(Node*& root)
+{
+    cout << "Enter data (-1 to stop): ";
+    int data;
+    cin >> data;
+
+    while (data != -1)
+    {
+        root = insertBST(root, data);
+        cout << "Enter data (-1 to stop): ";
+        cin >> data;
+    }
+}
+
+void inorder(Node* root)
+{
+    if (!root)
+    {
+        return;
+    }
+    inorder(root->left);
+    cout << root->data << " ";
+    inorder(root->right);
+}
+
+void preorder(Node* root)
+{
+    if (!root)
+    {
+        return;
+    }
+    cout << root->data << " ";
+    preorder(root->left);
+    preorder(root->right);
+}
+
+void postorder(Node* root)
+{
+    if (!root)
+    {
+        return;
+    }
+    postorder(root->left);
+    postorder(root->right);
+    cout << root->data << " ";
+}
+
+Node* search(Node* root, int val)
+{
+    if (!root)
+    {
+        return nullptr;
+    }
+
+    if (root->data == val)
+    {
+        return root;
+    }
+
+    if (val < root->data)
+    {
+        return search(root->left, val);
+    }
+    else
+    {
+        return search(root->right, val);
+    }
+}
+
+int smallest(Node* root)
+{
+    if (!root)
+    {
+        return -1;
+    }
+
+    Node* temp = root;
+    while (temp->left != nullptr)
+    {
+        temp = temp->left;
+    }
+
+    return temp->data;
+}
+
+int longest(Node* root)
+{
+    if (!root)
+    {
+        return 0;
+    }
+
+    int leftAns = longest(root->left);
+    int rightAns = longest(root->right);
+
+    return max(leftAns, rightAns) + 1;
+}
+
+void swap(Node* root)
+{
+    if (!root)
+    {
+        return;
+    }
+
+    Node* temp = root->left;
+    root->left = root->right;
+    root->right = temp;
+
+    swap(root->left);
+    swap(root->right);
+}
+
+int main()
+{
+    Node* root = nullptr;
+    int choice, val;
+    bool flag=true;
+
+    while(flag)
+    {
+        cout << "\n----- Binary Search Tree Menu -----\n";
+        cout << "1. Create BST\n";
+        cout << "2. Insert a new node\n";
+        cout << "3. Inorder traversal\n";
+        cout << "4. Preorder traversal\n";
+        cout << "5. Postorder traversal\n";
+        cout << "6. Search for a value\n";
+        cout << "7. Find smallest value\n";
+        cout << "8. Find longest path (height)\n";
+        cout << "9. Mirror the tree\n";
+        cout << "0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+            case 1:
+            {
+                createBST(root);
+                break;
+            }
+
+            case 2:
+            {
+                cout << "Enter value to insert: ";
+                cin >> val;
+                root = insertBST(root, val);
+                break;
+            }
+
+            case 3:
+            {
+                cout << "Inorder Traversal: ";
+                inorder(root);
+                cout << endl;
+                break;
+            }
+
+            case 4:
+            {
+                cout << "Preorder Traversal: ";
+                preorder(root);
+                cout << endl;
+                break;
+            }
+
+            case 5:
+            {
+                cout << "Postorder Traversal: ";
+                postorder(root);
+                cout << endl;
+                break;
+            }
+
+            case 6:
+            {
+                cout << "Enter value to search: ";
+                cin >> val;
+                if (search(root, val))
+                {
+                    cout << val << " is found in the BST.\n";
+                }
+                else
+                {
+                    cout << val << " is not found in the BST.\n";
+                }
+                break;
+            }
+
+            case 7:
+            {
+                cout << "Smallest value in BST: " << smallest(root) << endl;
+                break;
+            }
+
+            case 8:
+            {
+                cout << "Number of nodes in longest path: " << longest(root) << endl;
+                break;
+            }
+
+            case 9:
+            {
+                swap(root);
+                cout << "Tree has been mirrored.\n";
+                break;
+            }
+
+            case 0:
+            {
+                cout << "Exiting program.\n";
+                flag=false;
+                break;
+            }
+
+            default:
+            {
+                cout << "Invalid choice! Try again.\n";
+                break;
+            }
+        }
+
+    }
+
+    return 0;
+}
