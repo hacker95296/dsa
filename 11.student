@@ -1,0 +1,112 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
+void addStudent() {
+    ofstream outFile("student.txt", ios::app);
+
+    string rollNo, name, division, address;
+    cout << "Enter Roll No: ";
+    cin >> rollNo;
+    cout << "Enter Name: ";
+    cin >> name;
+    cout << "Enter Division: ";
+    cin >> division;
+    cout << "Enter Address: ";
+    cin >> address;
+
+    outFile << rollNo << " " << name << " " << division << " " << address << endl;
+    outFile.close();
+    cout << "Student added successfully.\n";
+}
+
+void deleteStudent() {
+    string rollNo;
+    cout << "Enter Roll No to delete: ";
+    cin >> rollNo;
+
+    ifstream inFile("student.txt");
+    ofstream tempFile("temp.txt");
+
+    string r, n, d, a;
+    bool deleted = false;
+
+    while (inFile >> r >> n >> d >> a) {
+        if (r != rollNo) {
+            tempFile << r << " " << n << " " << d << " " << a << endl;
+        } else {
+            deleted = true;
+        }
+    }
+
+    inFile.close();
+    tempFile.close();
+
+    remove("student.txt");
+    rename("temp.txt", "student.txt");
+
+    if (deleted)
+        cout << "Student deleted.\n";
+    else
+        cout << "Roll No not found.\n";
+}
+
+void searchStudent() {
+    string rollNo;
+    cout << "Enter Roll No to search: ";
+    cin >> rollNo;
+
+    ifstream inFile("student.txt");
+    string r, n, d, a;
+    bool found = false;
+
+    while (inFile >> r >> n >> d >> a) {
+        if (r == rollNo) {
+            cout << "Student Found:\n";
+            cout << "Roll No: " << r << "\nName: " << n << "\nDivision: " << d << "\nAddress: " << a << endl;
+            found = true;
+            break;
+        }
+    }
+
+    inFile.close();
+    if (!found)
+        cout << "Student not found.\n";
+}
+
+void printAll() {
+    ifstream inFile("student.txt");
+    string r, n, d, a;
+    cout << "All Students:\n";
+    while (inFile >> r >> n >> d >> a) {
+        cout << "Roll No: " << r << ", Name: " << n << ", Division: " << d << ", Address: " << a << endl;
+    }
+    inFile.close();
+}
+
+int main() {
+    int choice;
+
+    while (true) {
+        cout << "\n--- Menu ---\n";
+        cout << "1. Add Student\n";
+        cout << "2. Delete Student\n";
+        cout << "3. Search Student\n";
+        cout << "4. Print All Students\n";
+        cout << "5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addStudent(); break;
+            case 2: deleteStudent(); break;
+            case 3: searchStudent(); break;
+            case 4: printAll(); break;
+            case 5: return 0;
+            default: cout << "Invalid choice.\n";
+        }
+    }
+
+    return 0;
+}
