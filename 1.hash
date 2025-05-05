@@ -1,60 +1,74 @@
 def Hash(tele, Num):
-        return tele % Num
-
+    return tele % Num
 
 def linearProb(hashtable, index, Num):
-        i = 1
-        while(hashtable[index] != -1):
-                newindex = (index + i) % Num
-                if(hashtable[newindex] == -1) :
-                        return [newindex, i]
-                i+=1
-
+    i = 1
+    comparisons = 1
+    while True:
+        newindex = (index + i) % Num
+        comparisons += 1
+        if hashtable[newindex] == -1:
+            return [newindex, comparisons]
+        i += 1
+        if comparisons > Num:
+            print("Hash table full (linear probing)")
+            return [-1, comparisons]
 
 def quadraticprob(hashtable, index, Num):
-        i = 0
-        while(hashtable[index] != -1):
-                newindex = (index + i*i) % Num
-                if(hashtable[newindex] == -1) :
-                        return [newindex, i]
-                if(i > Num):
-                        print("There is no space left according to the quadratic equation")
-                        return -1
-                i+=1
-                
-        
-Num = int(input("Enter the total number of clients"))
-hashtable = [-1]*Num
-hashtable_new = [-1]*Num
+    i = 1
+    comparisons = 1
+    while True:
+        newindex = (index + i * i) % Num
+        comparisons += 1
+        if hashtable[newindex] == -1:
+            return [newindex, comparisons]
+        i += 1
+        if comparisons > Num:
+            print("Hash table full (quadratic probing)")
+            return [-1, comparisons]
+
+Num = int(input("Enter the total number of clients: "))
+hashtable = [-1] * Num
+hashtable_new = [-1] * Num
+
 linear_comparison = 0
 quadratic_comparison = 0
 counter = 0
+
 for i in range(Num):
-        tele = int(input("Enter the the telephone number"))
-        index = Hash(tele, Num)
-        
-        if(hashtable[index] != -1) :
-                newindex_linear = linearProb(hashtable, index, Num)
-                hashtable[newindex_linear[0]] = tele
-                linear_comparison += newindex_linear[1]
-        else :
-                hashtable[index] = tele
-                linear_comparison += 1
-        
-        if(hashtable_new[index] == -1):
-                hashtable_new[index] = tele
-                quadratic_comparison += 1
-        else :
-                newindex_quadratic = quadraticprob(hashtable_new, index, Num)
-                if newindex_quadratic == -1:
-                        break
-                hashtable_new[newindex_quadratic[0]] = tele
-                quadratic_comparison += newindex_quadratic[1]
-        counter+=1
-        print(hashtable)
-        print(hashtable_new)        
-                
-print(f"The total number is {linear_comparison} and average comparison of linear probing is {linear_comparison / counter}")
-print(f"The total number is {quadratic_comparison} and The average comparison of quadratic probing is {quadratic_comparison/ counter}")
-print(hashtable)
-print(hashtable_new)
+    tele = int(input("Enter the telephone number: "))
+    index = Hash(tele, Num)
+
+    if hashtable[index] == -1:
+        hashtable[index] = tele
+        linear_comparison += 1
+    else:
+        newindex_linear, comps = linearProb(hashtable, index, Num)
+        if newindex_linear == -1:
+            break
+        hashtable[newindex_linear] = tele
+        linear_comparison += comps
+
+    if hashtable_new[index] == -1:
+        hashtable_new[index] = tele
+        quadratic_comparison += 1
+    else:
+        newindex_quadratic, comps = quadraticprob(hashtable_new, index, Num)
+        if newindex_quadratic == -1:
+            break
+        hashtable_new[newindex_quadratic] = tele
+        quadratic_comparison += comps
+
+    counter += 1
+    print(f"\nAfter inserting {tele}:")
+    print("Linear Probing Table:", hashtable)
+    print("Quadratic Probing Table:", hashtable_new)
+
+
+print(f"Total insertions: {counter}")
+print(f"Total linear comparisons: {linear_comparison}")
+print(f"Average linear comparisons per insertion: {linear_comparison / counter:.2f}")
+print(f"Total quadratic comparisons: {quadratic_comparison}")
+print(f"Average quadratic comparisons per insertion: {quadratic_comparison / counter:.2f}")
+print("Final Linear Hash Table:", hashtable)
+print("Final Quadratic Hash Table:", hashtable_new)
